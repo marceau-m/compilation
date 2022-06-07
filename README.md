@@ -39,7 +39,7 @@ La solution que nous avons apporté à été de créer un changement de type con
 
 ## Script bash pour simplifier les commandes
 
-Il suffit de lancer la commande `./run.sh arg0 arg1 ...` après avoir entré l'exemple désiré à la fin du code python et l'exemple est compilé et run directement
+Il suffit de lancer la commande `./run.sh arg0 arg1 ...` après avoir entré l'exemple désiré à la fin du code python et l'exemple est compilé et run directement, le code assembleur est disponible dans le fichier hum.asm
 
 ## Exemples
 
