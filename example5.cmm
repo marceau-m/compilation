@@ -1,0 +1,12 @@
+main(X) {
+    Z = 3;
+    Y = 2;
+    while (Z)  {
+        Y = Y + 1.0 ;
+        Z = Z - 1.0;
+    }
+    Z = 1;
+    printf(Y);
+    printf(Z);
+    return(X);
+}

@@ -1,0 +1,7 @@
+main(X) {
+    Z = 0.0;
+    Y = 2.0;
+    Z = Z + Y +3 + 4.0;
+    printf(Z);
+    return(X);
+}

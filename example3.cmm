@@ -1,0 +1,12 @@
+main(X) {
+    Z = 2;
+    printf(Z);
+    Y = 2;
+    comp = (Z>Y);
+    while (comp)  {
+        Y = Y +3.0;
+        comp = (Z>Y);
+    }
+    printf(Y);
+    return(X);
+}

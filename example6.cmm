@@ -1,0 +1,16 @@
+main(X) {
+    Z = 3;
+    Y = 2;
+    printf(Y);
+    while(Z>Y) {
+        Z = Z - 1;
+        Y = (int) (Y + 1.0);
+        printf(Y);
+        printf(Z);
+    }
+    while (Y > 1) {
+        Y = Y - 2.2;
+    }
+    printf(Y);
+    return(X);
+}
