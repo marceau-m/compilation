@@ -1,13 +1,9 @@
 main(X) {
-    X = 3;
-    *Y = &X;
-    **Z = &Y;
-    printf(&Y);
-    printf(&Z);
-    printf(*Y);
+    Z = malloc(8+Y);
+    *Z = malloc(12);
+    printf(*Z);
+    **Z = 3;
     printf(**Z);
-
-    X = 5;
-    printf(*Y);
-    return(**Z);
+    printf(*Z);
+    return(Z);
 }

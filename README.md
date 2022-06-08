@@ -25,9 +25,9 @@ La plupart du code est proche des int avec l'utilisation des registres xmm0 ou x
 
 ### pointeurs
 
-Les pointeurs simples et doubles sont pris en charge, les adresses. Pour en définir un il faut lui fournir l'adresse d'une variable vers laquelle pointer (pas de malloc)
+Les pointeurs simples et doubles sont pris en charge, les adresses. Pour en définir un il faut lui fournir l'adresse d'une variable vers laquelle pointer ou le définir grâce à un malloc
 Il n'y a pas d'arithmétique des pointeurs, ni de pointage vers un float
-Un point d'amélioration est d'améliorer la grammaire afin de prendre en charge les pointeurs multiples et de la rendre "plus belle"
+Un point d'amélioration est d'améliorer la grammaire afin de prendre en charge les pointeurs multiples et de la rendre "plus belle" que de définir chaque pointeur à la main
 
 
 ### typage dynamique
@@ -50,7 +50,7 @@ Il suffit de lancer la commande `./run.sh arg0 arg1 ...` après avoir entré l'e
 
 Les exemples sont au format cmm pour C-- et illustrent des particularités de nos implémentations
 
-L'exemple 1 doit printer 1 0 8 pour 2 et 3 en entrée
+L'exemple 1 doit printer 1 0 3.14 8 pour 2 et 3 en entrée
 
 L'exemple 2 doit printer 9.0 2 pour 2 en entrée
 
@@ -62,10 +62,8 @@ L'exemple 5 doit printer 5.0 1 2 pour 2 en entrée
 
 L'exemple 6 doit printer 2 3 2 0.8 2 pour 2 en entrée
 
-L'exemple 7 doit printer addr1 3 addr2 5 pour 2 en entrée (adresses memoire)
+L'exemple 7 doit printer addr1 3 addr2 addr3 4 addr3 4 pour 2 en entrée (adresses memoire, malloc)
 
 L'exemple 8 doit printer 6 addr1 4 addr1 7 addr1 pour 2 en entrée (pointeurs)
 
-L'exemple 9 doit printer addr1 addr2 3 3 5 5 pour 2 en entrée (doubles pointeurs)
-
-L'exemple 10 doit lever une exception Not an adress (exception)
+L'exemple 9 doit printer addr1 3 addr1 addr2 pour 2 en entrée (doubles pointeurs)

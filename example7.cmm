@@ -4,5 +4,10 @@ main(X) {
     printf(&X);
     printf(X);
     printf(&Z);
-    return(Z);
+    p = malloc(8+2);
+    printf(p);
+    *p = 4;
+    printf(*p);
+    printf(p);
+    return(*p);
 }

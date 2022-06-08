@@ -1,6 +1,6 @@
 main(X) {
     X = 6;
-    *Z = &X;
+    Z = &X;
     printf(*Z);
     printf(&Z);
 

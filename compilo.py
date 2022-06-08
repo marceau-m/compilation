@@ -7,7 +7,9 @@ expr : IDENTIFIANT -> variable | INTEGER -> int | FLOAT -> float | expr OP expr 
 | "*" "*" IDENTIFIANT -> doublepointeur | "*" IDENTIFIANT -> pointeur
 cmd : IDENTIFIANT "=" expr ";"-> assignment | "while" "(" expr ")" "{" bloc "}" -> while
 | "if" "(" expr ")" "{" bloc "}" -> if | "printf" "(" expr ")" ";"-> printf 
-|"*" "*" IDENTIFIANT "=" expr ";"-> doublepointerassignment | "*" IDENTIFIANT "=" expr ";"-> pointerassignment |
+|"*" "*" IDENTIFIANT "=" expr ";"-> doublepointerassignment | "*" IDENTIFIANT "=" expr ";"-> pointerassignment 
+| IDENTIFIANT "=" "malloc" "(" expr ")" ";"-> pmalloc 
+| "*" IDENTIFIANT "=" "malloc" "(" expr ")" ";"-> dpmalloc 
 bloc : (cmd)*
 prog : "main" "(" variables ")" "{" bloc "return" "(" expr ")" ";" "}"
 INTEGER : /[-]?[0-9]+/
@@ -75,6 +77,16 @@ def pp_cmd(cmd):
     elif cmd.data == "printf":
         espace = add_ind()
         return f"{espace}printf({pp_expr(cmd.children[0])});\n"
+    elif cmd.data == "pmalloc":
+        espace = add_ind()
+        lhs = cmd.children[0].value
+        rhs = pp_expr(cmd.children[1])
+        return f"{espace}{lhs} = malloc({rhs});\n"
+    elif cmd.data == "dpmalloc":
+        espace = add_ind()
+        lhs = cmd.children[0].value
+        rhs = pp_expr(cmd.children[1])
+        return f"{espace}*{lhs} = malloc({rhs});\n"
     elif cmd.data in {"while", "if"}:
         e = pp_expr(cmd.children[0])
         b = pp_bloc(cmd.children[1])
@@ -106,15 +118,6 @@ def pp_prg(prog):
     ret = pp_expr(prog.children[2])
     return f"main ({vars}){{ \n{bloc}   return ({ret}); \n}}"
     
-prg = grammaire.parse("""main(X,Y) {
-Z = 3.14;
-printf(Z);
-if (X>1) {
-    Z = Z + X;
-}
-printf(Z);
-return(X);
-}""")
 
 
 #prg2 = grammaire.parse(pp_prg(prg))
@@ -275,14 +278,25 @@ def compile_cmd(cmd):
             return f"{e}\nmov rdi, fmt_float\nmov rsi, rax\nmov rax, 1\ncall printf\n"
         elif typee == "int":
             return f"{e}\nmov rdi, fmt_int\nmov rsi, rax\nxor rax, rax\ncall printf\n"
-    elif cmd.data in {"pointerassignment", "doublepointerassignment"}:
+    elif cmd.data == "pointerassignment":
         lhs = cmd.children[0].value
         rhs, typerhs = compile_expr(cmd.children[1])
-        if(cmd.children[1].data == "adresse"):
-            dict_var[lhs]="int"
-            return f"{rhs}\nmov [{lhs}],rax"
-        else:
-            raise Exception("Not an adress")
+        dict_var[lhs]="int"
+        return f"{rhs}\nmov rbx,[{lhs}]\n mov [rbx],rax"
+    elif cmd.data == "doublepointerassignment":
+        lhs = cmd.children[0].value
+        rhs, typerhs = compile_expr(cmd.children[1])
+        dict_var[lhs]="int"
+        return f"{rhs}\nmov rbx,[{lhs}]\nmov rcx, [rbx]\nmov [rcx],rax"
+    elif cmd.data == "pmalloc":
+        lhs = cmd.children[0].value
+        rhs, typerhs = compile_expr(cmd.children[1])
+        return f"{rhs}\nmov rdi,rax\ncall malloc\nmov [{lhs}],rax\n"
+    elif cmd.data == "dpmalloc" :
+        lhs = cmd.children[0].value
+        rhs, typerhs = compile_expr(cmd.children[1])
+        return f"{rhs}\nmov rdi,rax\ncall malloc\nmov rbx, [{lhs}]\nmov [rbx],rax\n"
+
     else:
         raise Exception("Not implemented")
 
