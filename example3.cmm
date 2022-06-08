@@ -1,5 +1,5 @@
 main(X) {
-    Z = 2;
+    Z = 3;
     printf(Z);
     Y = 2;
     comp = (Z>Y);

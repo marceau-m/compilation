@@ -1,0 +1,4 @@
+main(X) {
+    *A = 4;
+    return(*A);
+}
