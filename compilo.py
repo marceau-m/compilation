@@ -3,9 +3,11 @@ import lark
 grammaire = lark.Lark("""
 variables : IDENTIFIANT ("," IDENTIFIANT)*
 expr : IDENTIFIANT -> variable | INTEGER -> int | FLOAT -> float | expr OP expr -> binexpr
-| "(" expr ")" -> parenexpr | "(" TYPE ")" expr -> cast
+| "(" expr ")" -> parenexpr | "(" TYPE ")" expr -> cast | "&" IDENTIFIANT -> adresse 
+| "*" "*" IDENTIFIANT -> doublepointeur | "*" IDENTIFIANT -> pointeur
 cmd : IDENTIFIANT "=" expr ";"-> assignment | "while" "(" expr ")" "{" bloc "}" -> while
-    | "if" "(" expr ")" "{" bloc "}" -> if | "printf" "(" expr ")" ";"-> printf
+| "if" "(" expr ")" "{" bloc "}" -> if | "printf" "(" expr ")" ";"-> printf 
+|"*" "*" IDENTIFIANT "=" expr ";"-> doublepointerassignment | "*" IDENTIFIANT "=" expr ";"-> pointerassignment |
 bloc : (cmd)*
 prog : "main" "(" variables ")" "{" bloc "return" "(" expr ")" ";" "}"
 INTEGER : /[-]?[0-9]+/
@@ -50,6 +52,12 @@ def pp_expr(expr):
         return f"{e1} {op} {e2}"
     elif expr.data == "parenexpr":
         return f"({pp_expr(expr.children[0])})"
+    elif expr.data == "pointeur":
+        return f"*{expr.children[0].value}"
+    elif expr.data == "doublepointeur":
+        return f"**{expr.children[0].value}"
+    elif expr.data == "adresse":
+        return f"&{expr.children[0].value}"
     elif expr.data == "cast":
         t = expr.children[0].value
         e1 = pp_expr(expr.children[1])
@@ -73,6 +81,16 @@ def pp_cmd(cmd):
         espace = add_ind()
         ind += 1
         return f"{espace}{cmd.data} ({e}) {{ \n{b}}}\n"
+    elif cmd.data == "pointerassignment":
+        lhs = cmd.children[0].value
+        rhs = pp_expr(cmd.children[1])
+        espace = add_ind()
+        return f"{espace}*{lhs} = {rhs};"
+    elif cmd.data == "doublepointerassignment":
+        lhs = cmd.children[0].value
+        rhs = pp_expr(cmd.children[1])
+        espace = add_ind()
+        return f"{espace}**{lhs} = {rhs};"
     else:
         raise Exception("Not Implemented")
     return ""
@@ -177,6 +195,14 @@ def compile_expr(expr):
             return f"{e2}\npush rax\n{e1}\npop rbx\n{opint2asm[OP]} rax, rbx",typeres
     elif expr.data == "parenexpr":
         return compile_expr(expr.children[0])
+    elif expr.data == "pointeur":
+        return f"mov rcx, [{expr.children[0].value}]\nmov rax, [rcx]\n","int"
+
+    elif expr.data == "doublepointeur":
+        return f"mov rcx, [{expr.children[0].value}]\nmov rdx, [rcx]\nmov rax, [rdx]\n","int"
+
+    elif expr.data == "adresse":
+        return f"mov rax, {expr.children[0].value}\n","int"
     elif expr.data == "cast":
         e1, typee1 = compile_expr(expr.children[1])
         nouv_type = expr.children[0]
@@ -249,13 +275,21 @@ def compile_cmd(cmd):
             return f"{e}\nmov rdi, fmt_float\nmov rsi, rax\nmov rax, 1\ncall printf\n"
         elif typee == "int":
             return f"{e}\nmov rdi, fmt_int\nmov rsi, rax\nxor rax, rax\ncall printf\n"
+    elif cmd.data in {"pointerassignment", "doublepointerassignment"}:
+        lhs = cmd.children[0].value
+        rhs, typerhs = compile_expr(cmd.children[1])
+        if(cmd.children[1].data == "adresse"):
+            dict_var[lhs]="int"
+            return f"{rhs}\nmov [{lhs}],rax"
+        else:
+            raise Exception("Not an adress")
     else:
         raise Exception("Not implemented")
 
 def compile_bloc(bloc):
     return "\n".join([compile_cmd(t) for t in bloc.children])
 
-data = open("example6.cmm","r")
+data = open("example1.cmm","r")
 prg = grammaire.parse(data.read())
 
 print(compile(prg))

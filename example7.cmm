@@ -1,0 +1,8 @@
+main(X) {
+    X = 3;
+    Z = 5;
+    printf(&X);
+    printf(X);
+    printf(&Z);
+    return(Z);
+}

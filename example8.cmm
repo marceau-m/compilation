@@ -1,0 +1,15 @@
+main(X) {
+    X = 6;
+    *Z = &X;
+    printf(*Z);
+    printf(&Z);
+
+    Y = 4;
+    Z = &Y;
+    printf(*Z);
+    printf(&Z);
+
+    Y = 7;
+    printf(*Z);
+    return(&Z);
+}
