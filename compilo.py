@@ -198,6 +198,8 @@ def compile_expr(expr):
             return f"{e2}\npush rax\n{e1}\npop rbx\n{opint2asm[OP]} rax, rbx",typeres
     elif expr.data == "parenexpr":
         return compile_expr(expr.children[0])
+    
+    #gestion des pointeurs
     elif expr.data == "pointeur":
         return f"mov rcx, [{expr.children[0].value}]\nmov rax, [rcx]\n","int"
 
@@ -206,6 +208,8 @@ def compile_expr(expr):
 
     elif expr.data == "adresse":
         return f"mov rax, {expr.children[0].value}\n","int"
+    
+    #gestion du cast
     elif expr.data == "cast":
         e1, typee1 = compile_expr(expr.children[1])
         nouv_type = expr.children[0]
@@ -222,6 +226,7 @@ def compile_expr(expr):
         raise Exception("Not implemented")
 
 def compile_cmd(cmd):
+    #les commandes sont gérées selon le type
     if cmd.data == "assignment":
         lhs = cmd.children[0].value
         rhs, typerhs = compile_expr(cmd.children[1])
@@ -278,6 +283,8 @@ def compile_cmd(cmd):
             return f"{e}\nmov rdi, fmt_float\nmov rsi, rax\nmov rax, 1\ncall printf\n"
         elif typee == "int":
             return f"{e}\nmov rdi, fmt_int\nmov rsi, rax\nxor rax, rax\ncall printf\n"
+    
+    #gestion des pointeurs
     elif cmd.data == "pointerassignment":
         lhs = cmd.children[0].value
         rhs, typerhs = compile_expr(cmd.children[1])
