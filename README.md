@@ -44,8 +44,10 @@ Nous n'avons pas trouvé de solution permettant de résoudre complétement ce pr
 ## Tentatives non abouties
 
 Nous nous sommes rendus compte que l'ordre sur les opérations n'était pas pris en compte dans notre grammaire. Vous trouverez donc un fichier grammaire_operations.txt avec une grammaire qui le prend en compte. Nous n'avons cependant pas eu le temps de modifier notre compilateur pour qu'il prenne en compte cette nouvelle structure.
+Le principe est de séparer la multiplication des autres opérations et en explicitant que le fait qu'on ne peut multipliser que deux membres qui ne sont pas des additions eux-mêmes. Ainsi 5+3x2 ne peut pas se lire (3+5)x2 mais seulement 3+5x2.
 
-Vous trouverez également un fichier tentative_typage.py dans lequel le changement de type marche complètement. Néanmoins, le compilo s'emmêle les pinceaux avec les jump s'il y a plus d'une boucle dans le programme.
+Vous trouverez également un fichier tentative_typage.py dans lequel le changement de type marche complètement. Néanmoins, le compilo s'emmêle les pinceaux avec les jump s'il y a plus d'une boucle dans le programme. 
+Le principe est, en cas de boucle, de doubler le code assembleur avec une partie prenant en compte les changements de types qui ont eu lieu dans la boucle et une partie sans ces changements de type. Ensuite, les jump sont adaptés pour que cela marche.
 
 ## Script bash pour simplifier les commandes
 
