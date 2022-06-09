@@ -41,6 +41,11 @@ Concernant le typage, on est capable de faire de nombreuses opérations entre le
 Les problèmes que nous avons rencontré ont notamment été lorsqu'il y a un changement de type dans une boucle, si on ne passe pas dans la boucle alors le type ne change pas, cependant le compilateur ne peut pas savoir s'il va y avoir un passage dans la boucle ou non. 
 Nous n'avons pas trouvé de solution permettant de résoudre complétement ce problème, ainsi lorsqu'il y a un changement de type dans une boucle il faut y passer au moins une fois dedans. L'exemple 4 témoigne de ce problème ou le 1er et 2ème print renvoient 0.0 car le type de Y a changé puis celui de Z
 
+## Tentatives non abouties
+
+Nous nous sommes rendus compte que l'ordre sur les opérations n'était pas pris en compte dans notre grammaire. Vous trouverez donc un fichier grammaire_operations.txt avec une grammaire qui le prend en compte. Nous n'avons cependant pas eu le temps de modifier notre compilateur pour qu'il prenne en compte cette nouvelle structure.
+
+Vous trouverez également un fichier tentative_typage.py dans lequel le changement de type marche complètement. Néanmoins, le compilo s'emmêle les pinceaux avec les jump s'il y a plus d'une boucle dans le programme.
 
 ## Script bash pour simplifier les commandes
 
