@@ -1,0 +1,28 @@
+
+grammaire = lark.Lark("""
+variables : IDENTIFIANT ("," IDENTIFIANT)*
+multi : exprssadd OPMUL exprssadd
+addi : expr OP expr
+operations : multi|addi
+exprssadd : IDENTIFIANT -> variable | INTEGER -> int | FLOAT -> float | multi -> opmult
+| "(" expr ")" -> parenexpr | "(" TYPE ")" expr -> cast | "&" IDENTIFIANT -> adresse 
+| "*" "*" IDENTIFIANT -> doublepointeur | "*" IDENTIFIANT -> pointeur
+expr : IDENTIFIANT -> variable | INTEGER -> int | FLOAT -> float |operations -> binexpr 
+| "(" expr ")" -> parenexpr | "(" TYPE ")" expr -> cast | "&" IDENTIFIANT -> adresse 
+| "*" "*" IDENTIFIANT -> doublepointeur | "*" IDENTIFIANT -> pointeur
+cmd : IDENTIFIANT "=" expr ";"-> assignment | "while" "(" expr ")" "{" bloc "}" -> while
+| "if" "(" expr ")" "{" bloc "}" -> if | "printf" "(" expr ")" ";"-> printf 
+|"*" "*" IDENTIFIANT "=" expr ";"-> doublepointerassignment | "*" IDENTIFIANT "=" expr ";"-> pointerassignment 
+| IDENTIFIANT "=" "malloc" "(" expr ")" ";"-> pmalloc 
+| "*" IDENTIFIANT "=" "malloc" "(" expr ")" ";"-> dpmalloc 
+bloc : (cmd)*
+prog : "main" "(" variables ")" "{" bloc "return" "(" expr ")" ";" "}"
+INTEGER : /[-]?[0-9]+/
+FLOAT : /[-]?[0-9]+\.[0-9]+/
+OP : /[+>\*-]/
+OPMUL : /[\*]/
+TYPE : /int|float/
+IDENTIFIANT : /[a-zA-Z][a-zA-Z0-9]*/
+%import common.WS
+%ignore WS
+""", start = "prog")

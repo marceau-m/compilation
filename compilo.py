@@ -303,7 +303,7 @@ def compile_cmd(cmd):
 def compile_bloc(bloc):
     return "\n".join([compile_cmd(t) for t in bloc.children])
 
-data = open("example1.cmm","r")
+data = open("exemples/example1.cmm","r")
 prg = grammaire.parse(data.read())
 
 print(compile(prg))
